@@ -1,9 +1,11 @@
 # MTH-693b-2018
-Abraham Flores
+Author : Abraham Flores
 
-arflores2@sdsu.edu
+Email  : arflores2@sdsu.edu
 
-Physics 343
+Office : Physics 343
+
+Affilation :
 
 San Diego State University
 
