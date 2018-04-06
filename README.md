@@ -1,4 +1,4 @@
-# MTH-693b-2018
+# MTH-693b
 Author : Abraham Flores
 
 Email  : arflores2@sdsu.edu
