@@ -13,4 +13,5 @@ Computational Science Reasearch Center
 
 Computational Partial Differential Equations: MTH 693b
 
+------------------------------------------------------
 I present a repository containing my solutions to computational Strikwerda problems and my final project.
