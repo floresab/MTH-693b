@@ -3,7 +3,7 @@ Author   : Abraham Flores
 File     : p1374.py
 Language : Python 3.6
 Created  : 4/22/2018
-Edited   : 4/23/2018
+Edited   : 5/5/2018 -- Fixed SOR on Boundaries... Halved iterations
 
 San Digeo State University 
 MTH 693b : Computational Partial Differential Equations
@@ -60,12 +60,13 @@ def SOR_FO(grid,grid_forcing,n,omega,tol):
   while(not converged):
       change = 0
       #loop over inner grid
+      change += sum([x**2 for x in omega*(grid[1] - grid[0])])
+      grid[0] += omega*(grid[1] - grid[0])
       
-      grid[0] = grid[1]
-      grid[-1] =  grid[-2]
       for i in range(1,n-1):
-          grid[i][0] = grid[i][1]
-          grid[i][-1] = grid[i][-2]
+          point_change = omega*(grid[i][1] - grid[i][0])
+          grid[i][0] += point_change
+          change += (point_change)**2
           
           for j in range(1,n-1):
               #SOR METHOD
@@ -75,7 +76,14 @@ def SOR_FO(grid,grid_forcing,n,omega,tol):
               
               #ADD to L2 change Norm
               change += (point_change)**2
-             
+              
+          point_change = omega*(grid[i][-2] - grid[i][-1])
+          grid[i][-1] += point_change
+          change += (point_change)**2  
+          
+      change += sum([x**2 for x in omega*(grid[-2] - grid[-1])])
+      grid[-1] += omega*(grid[-2] - grid[-1])
+      
       iters+=1       
       #check if convergence is reached
       if (np.sqrt(change) < tol):
@@ -107,11 +115,15 @@ def SOR_SO(grid,grid_forcing,n,omega,tol):
   while(not converged):
       change = 0
       #loop over inner grid
-      grid[0] = (-4*grid[1] + grid[2])/(-3)
-      grid[-1] = (-4*grid[-2] + grid[-3])/(-3)
+      point_change = omega*((-4*grid[1] + grid[2])/(-3) - grid[0])
+      change += sum(point_change*point_change)
+      grid[0] += point_change
+      
       for i in range(1,n-1):
-          grid[i][0] = (-4*grid[i][1] + grid[i][2])/(-3)
-          grid[i][-1] = (-4*grid[i][-2] + grid[i][-3])/(-3)
+          point_change = omega*((-4*grid[i][1] + grid[i][2])/(-3)-grid[i][0])
+          grid[i][0] += point_change
+          change += point_change*point_change
+          
           for j in range(1,n-1):
               #SOR METHOD
               sigma = grid[i+1][j] + grid[i-1][j] + grid[i][j+1] +grid[i][j-1]
@@ -120,7 +132,16 @@ def SOR_SO(grid,grid_forcing,n,omega,tol):
               
               #ADD to L2 change Norm
               change += (point_change)**2
-             
+              
+          point_change = omega*((-4*grid[i][-2] + grid[i][-3])/(-3)-grid[i][-1])
+          grid[i][-1] += point_change
+          change += point_change*point_change
+          
+      point_change = omega*((-4*grid[-2] + grid[-3])/(-3) - grid[-1])
+      grid[-1] += point_change 
+      change += sum(point_change*point_change)
+      
+      
       iters+=1       
       #check if convergence is reached
       if (np.sqrt(change) < tol):
